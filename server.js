@@ -76,7 +76,7 @@ app.post("/api/register", async (req, res) => {
     if (db.data.users.find(u => u.email.toLowerCase() === email.trim().toLowerCase()))
       return res.status(409).json({ message: "Email уже используется" });
 
-    const uid = String(db.data.users.length + 1).padStart(6, "0");
+    const uid = String(db.data.users.length + 1);
     const user = {
       id: Date.now(), uid,
       username: username.trim(), email: email.trim(),
@@ -108,6 +108,7 @@ app.post("/api/login", async (req, res) => {
     if (!user) return res.status(401).json({ message: "Неверный логин или пароль" });
     if (!await bcrypt.compare(password.trim(), user.password))
       return res.status(401).json({ message: "Неверный логин или пароль" });
+    if (user.banned) return res.status(403).json({ message: "Аккаунт заблокирован. Обратитесь в поддержку." });
 
     // HWID проверка
     if (hwid && user.subscription) {
@@ -157,6 +158,28 @@ app.get("/api/download", auth, (req, res) => {
 });
 
 // ══ ADMIN ═════════════════════════════════════════════════
+
+// Бан юзера
+app.put("/api/admin/users/:id/ban", auth, async (req, res) => {
+  if (!canAdmin(req.user.role)) return res.status(403).json({ message: "Нет доступа" });
+  const user = db.data.users.find(u => u.id === Number(req.params.id));
+  if (!user) return res.status(404).json({ message: "Не найден" });
+  if (user.role === "owner") return res.status(403).json({ message: "Нельзя забанить владельца" });
+  user.banned = !user.banned;
+  await db.write();
+  res.json({ success: true, banned: user.banned });
+});
+
+// Удалить юзера
+app.delete("/api/admin/users/:id", auth, async (req, res) => {
+  if (!canAdmin(req.user.role)) return res.status(403).json({ message: "Нет доступа" });
+  const user = db.data.users.find(u => u.id === Number(req.params.id));
+  if (!user) return res.status(404).json({ message: "Не найден" });
+  if (user.role === "owner") return res.status(403).json({ message: "Нельзя удалить владельца" });
+  db.data.users = db.data.users.filter(u => u.id !== Number(req.params.id));
+  await db.write();
+  res.json({ success: true });
+});
 
 // Список юзеров
 app.get("/api/admin/users", auth, (req, res) => {
@@ -228,7 +251,7 @@ app.delete("/api/admin/keys/:key", auth, async (req, res) => {
 app.get("/api/roles", (req, res) => res.json({ roles: ROLES }));
 
 function publicUser(u) {
-  return { id: u.id, uid: u.uid, username: u.username, email: u.email, role: u.role, subscription: u.subscription, subExpiry: u.subExpiry, hwid: u.hwid ? "***" : null, hwidBanned: u.hwidBanned, createdAt: u.createdAt };
+  return { id: u.id, uid: u.uid, username: u.username, email: u.email, role: u.role, subscription: u.subscription, subExpiry: u.subExpiry, hwid: u.hwid ? "***" : null, hwidBanned: u.hwidBanned, banned: u.banned || false, createdAt: u.createdAt };
 }
 
 app.get("*", (req, res) => res.sendFile(path.join(__dirname, "public", "index.html")));

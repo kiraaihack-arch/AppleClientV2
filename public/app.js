@@ -101,6 +101,7 @@ function navbar(page) {
     <div class="nav-logo">🍎 AppleClient</div>
     <div class="nav-links">
       <button class="nav-btn ${page==='home'?'active':''}" onclick="showHome()">Главная</button>
+      <button class="nav-btn ${page==='plans'?'active':''}" onclick="showPlans()">Тарифы</button>
       ${me ? `
         <button class="nav-btn ${page==='cabinet'?'active':''}" onclick="showCabinet()">Кабинет</button>
         ${isAdmin ? `<button class="nav-btn ${page==='admin'?'active':''}" onclick="showAdmin()">⚙ Панель</button>` : ''}
@@ -126,6 +127,9 @@ function showHome() {
         <button class="btn btn-outline" style="width:auto;padding:14px 32px" onclick="window.open('https://t.me/Burmalda_jmv')">
           💬 Telegram
         </button>
+        <button class="btn btn-outline" style="width:auto;padding:14px 32px" onclick="showPlans()">
+          💎 Тарифы
+        </button>
       </div>
     </div>
     <div class="features">
@@ -135,6 +139,48 @@ function showHome() {
       <div class="feature"><div class="feature-icon">🛡</div><h3>Безопасность</h3><p>Регулярные обновления и защита аккаунта</p></div>
       <div class="feature"><div class="feature-icon">💎</div><h3>Премиум поддержка</h3><p>Быстрая помощь через Telegram</p></div>
       <div class="feature"><div class="feature-icon">🔑</div><h3>Ключи активации</h3><p>Простая система активации подписки</p></div>
+    </div>
+  </div>`);
+}
+
+// ── ТАРИФЫ ────────────────────────────────────────────────
+function showPlans() {
+  const plans = [
+    { label:'👑 Lifetime', days:0,   color:'#FFD700', price:'999₽',  desc:'Навсегда', popular:false },
+    { label:'💎 180 дней', days:180, color:'#A855F7', price:'599₽',  desc:'6 месяцев', popular:true  },
+    { label:'🔥 90 дней',  days:90,  color:'#FF8C00', price:'349₽',  desc:'3 месяца',  popular:false },
+    { label:'⚡ 60 дней',  days:60,  color:'#FF4444', price:'249₽',  desc:'2 месяца',  popular:false },
+    { label:'✅ 30 дней',  days:30,  color:'#22C55E', price:'149₽',  desc:'1 месяц',   popular:false },
+    { label:'📅 14 дней',  days:14,  color:'#3B82F6', price:'89₽',   desc:'2 недели',  popular:false },
+    { label:'🗓 7 дней',   days:7,   color:'#6B7280', price:'49₽',   desc:'1 неделя',  popular:false },
+  ];
+
+  render(`${navbar('plans')}
+  <div class="page">
+    <div style="text-align:center;padding:48px 0 32px">
+      <h2 style="font-size:36px;font-weight:800">💎 Тарифы</h2>
+      <p style="color:#6b7280;margin-top:8px;font-size:16px">Выберите подходящий план и напишите нам в Telegram</p>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px;max-width:900px;margin:0 auto 60px">
+      ${plans.map(p => `
+      <div style="background:#111118;border:1px solid ${p.popular ? p.color : 'rgba(255,255,255,0.06)'};border-radius:14px;padding:20px;text-align:center;position:relative;${p.popular?'transform:scale(1.04)':''}">
+        ${p.popular ? `<div style="position:absolute;top:-10px;left:50%;transform:translateX(-50%);background:${p.color};color:#000;font-size:10px;font-weight:700;padding:3px 10px;border-radius:20px;white-space:nowrap">🔥 ХИТ</div>` : ''}
+        <div style="font-size:28px;margin-bottom:8px">${p.label.split(' ')[0]}</div>
+        <div style="color:${p.color};font-weight:700;font-size:14px">${p.label.slice(2)}</div>
+        <div style="color:#6b7280;font-size:12px;margin:4px 0 12px">${p.desc}</div>
+        <div style="font-size:24px;font-weight:800;color:#fff;margin-bottom:14px">${p.price}</div>
+        <button class="btn btn-sm" style="background:${p.color};border:none;color:#000;font-weight:700;width:100%;padding:9px" onclick="window.open('https://t.me/Burmalda_jmv')">
+          Купить
+        </button>
+      </div>`).join('')}
+    </div>
+    <div style="text-align:center;padding:24px;background:#111118;border-radius:16px;max-width:500px;margin:0 auto">
+      <div style="font-size:24px;margin-bottom:8px">💬</div>
+      <div style="font-weight:700;margin-bottom:6px">Покупка через Telegram</div>
+      <div style="color:#6b7280;font-size:14px;margin-bottom:16px">После оплаты вы получите ключ активации</div>
+      <button class="btn" style="width:auto;padding:12px 28px" onclick="window.open('https://t.me/Burmalda_jmv')">
+        Написать @Burmalda_jmv
+      </button>
     </div>
   </div>`);
 }
@@ -298,6 +344,7 @@ function renderAdmin() {
   const tabs = [
     {id:'users', label:'👥 Пользователи'},
     ...(canAdmin() ? [{id:'keys', label:'🔑 Ключи'}] : []),
+    {id:'plans', label:'💎 Тарифы'},
   ];
 
   let content = '';
@@ -316,6 +363,30 @@ function renderAdmin() {
         ${renderUsersRows(allUsers)}
       </tbody>
     </table>
+    </div>`;
+  } else if (adminTab === 'plans') {
+    const plans = [
+      { label:'👑 Lifetime', days:0,   color:'#FFD700', desc:'Навсегда' },
+      { label:'💎 180 дней', days:180, color:'#A855F7', desc:'6 месяцев' },
+      { label:'🔥 90 дней',  days:90,  color:'#FF8C00', desc:'3 месяца'  },
+      { label:'⚡ 60 дней',  days:60,  color:'#FF4444', desc:'2 месяца'  },
+      { label:'✅ 30 дней',  days:30,  color:'#22C55E', desc:'1 месяц'   },
+      { label:'📅 14 дней',  days:14,  color:'#3B82F6', desc:'2 недели'  },
+      { label:'🗓 7 дней',   days:7,   color:'#6B7280', desc:'1 неделя'  },
+    ];
+    content = `
+    <h3>Тарифы подписки</h3>
+    <p style="color:#6b7280;font-size:14px;margin-bottom:20px">Выберите пользователя и выдайте нужный тариф прямо из таблицы юзеров.</p>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px">
+      ${plans.map(p => `
+      <div style="background:#1a1a24;border:1px solid ${p.color}33;border-radius:12px;padding:20px;text-align:center">
+        <div style="font-size:24px;margin-bottom:8px">${p.label.split(' ')[0]}</div>
+        <div style="font-weight:700;color:${p.color};font-size:15px">${p.label.slice(2)}</div>
+        <div style="color:#6b7280;font-size:13px;margin-top:4px">${p.desc}</div>
+        <button class="btn btn-sm mt" style="background:${p.color};border:none;color:#000;font-weight:700" onclick="showGenKeys(${p.days})">
+          Создать ключ
+        </button>
+      </div>`).join('')}
     </div>`;
   } else {
     content = `
@@ -359,7 +430,15 @@ function renderUsersRows(users) {
     <td>${roleTag(u.role)}</td>
     <td>${subBadge(u)}</td>
     <td style="color:#6b7280;font-size:12px">${u.hwid || '—'}</td>
-    <td><button class="btn btn-sm" onclick="showEditUser(${u.id})">✏ Изменить</button></td>
+    <td>
+      <div style="display:flex;gap:4px;flex-wrap:wrap">
+        <button class="btn btn-sm" onclick="showEditUser(${u.id})">✏</button>
+        ${canAdmin() ? `
+          <button class="btn btn-sm ${u.banned?'btn-green':'btn-red'}" onclick="banUser(${u.id})">${u.banned?'🔓':'🔒'}</button>
+          <button class="btn btn-sm btn-red" onclick="deleteUser(${u.id})">🗑</button>
+        ` : ''}
+      </div>
+    </td>
   </tr>`).join('');
 }
 
@@ -441,8 +520,24 @@ function closeModal() {
   document.getElementById('edit-modal')?.remove();
 }
 
-// ── КЛЮЧИ ─────────────────────────────────────────────────
-function showGenKeys() {
+async function banUser(id) {
+  const u = allUsers.find(x => x.id === id);
+  if (!confirm(`${u.banned ? 'Разбанить' : 'Забанить'} ${u.username}?`)) return;
+  const res = await api('PUT', `/api/admin/users/${id}/ban`);
+  if (!res.ok) { alert((await res.json()).message); return; }
+  await showAdmin();
+}
+
+async function deleteUser(id) {
+  const u = allUsers.find(x => x.id === id);
+  if (!confirm(`Удалить ${u.username}? Это действие нельзя отменить!`)) return;
+  const res = await api('DELETE', `/api/admin/users/${id}`);
+  if (!res.ok) { alert((await res.json()).message); return; }
+  await showAdmin();
+}
+
+
+function showGenKeys(defaultDays) {
   document.getElementById('app').insertAdjacentHTML('beforeend', `
   ${CSS}
   <div class="modal" id="gen-modal">
@@ -451,7 +546,7 @@ function showGenKeys() {
       <label>Количество (макс 50)</label>
       <input class="input mb" id="g-count" type="number" value="1" min="1" max="50">
       <label>Дней подписки (0 = навсегда)</label>
-      <input class="input mb" id="g-days" type="number" value="30" min="0">
+      <input class="input mb" id="g-days" type="number" value="${defaultDays !== undefined ? defaultDays : 30}" min="0">
       <div style="display:flex;gap:8px;margin-top:12px">
         <button class="btn" onclick="genKeys()">Создать</button>
         <button class="btn btn-outline" onclick="document.getElementById('gen-modal').remove()">Отмена</button>
