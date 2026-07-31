@@ -1,0 +1,31 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "uid": "000001",
+      "username": "Burmalda",
+      "email": "owner@appleclient.ru",
+      "password": "$2a$10$Fg0qcKNENwgAzaNIfQaKIO8gOtFRz6OVr.c44dhNsDyv./aZ3OOdq",
+      "role": "owner",
+      "subscription": true,
+      "subExpiry": null,
+      "hwid": null,
+      "hwidBanned": false,
+      "createdAt": "2026-07-31T22:03:35.106Z"
+    },
+    {
+      "id": 1785535487861,
+      "uid": "000002",
+      "username": "dezzka",
+      "email": "vustimenko893@gmail.com",
+      "password": "$2a$10$sIyVHhj0yVSF9cVWhPbK2ucPerONE8oB5Zz89OH13DE3Ch3.lM8LO",
+      "role": "user",
+      "subscription": false,
+      "subExpiry": null,
+      "hwid": null,
+      "hwidBanned": false,
+      "createdAt": "2026-07-31T22:04:47.923Z"
+    }
+  ],
+  "keys": []
+}
