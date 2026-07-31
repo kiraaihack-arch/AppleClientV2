@@ -146,13 +146,13 @@ function showHome() {
 // ── ТАРИФЫ ────────────────────────────────────────────────
 function showPlans() {
   const plans = [
-    { label:'👑 Lifetime', days:0,   color:'#FFD700', price:'999₽',  desc:'Навсегда', popular:false },
-    { label:'💎 180 дней', days:180, color:'#A855F7', price:'599₽',  desc:'6 месяцев', popular:true  },
-    { label:'🔥 90 дней',  days:90,  color:'#FF8C00', price:'349₽',  desc:'3 месяца',  popular:false },
-    { label:'⚡ 60 дней',  days:60,  color:'#FF4444', price:'249₽',  desc:'2 месяца',  popular:false },
-    { label:'✅ 30 дней',  days:30,  color:'#22C55E', price:'149₽',  desc:'1 месяц',   popular:false },
-    { label:'📅 14 дней',  days:14,  color:'#3B82F6', price:'89₽',   desc:'2 недели',  popular:false },
-    { label:'🗓 7 дней',   days:7,   color:'#6B7280', price:'49₽',   desc:'1 неделя',  popular:false },
+    { label:'👑 Lifetime', days:0,   color:'#FFD700', price:'299₽ / 125₴',  desc:'Навсегда', popular:false },
+    { label:'💎 180 дней', days:180, color:'#A855F7', price:'199₽ / 83₴',   desc:'6 месяцев', popular:true  },
+    { label:'🔥 90 дней',  days:90,  color:'#FF8C00', price:'129₽ / 54₴',   desc:'3 месяца',  popular:false },
+    { label:'⚡ 60 дней',  days:60,  color:'#FF4444', price:'89₽ / 37₴',    desc:'2 месяца',  popular:false },
+    { label:'✅ 30 дней',  days:30,  color:'#22C55E', price:'59₽ / 25₴',    desc:'1 месяц',   popular:false },
+    { label:'📅 14 дней',  days:14,  color:'#3B82F6', price:'39₽ / 16₴',    desc:'2 недели',  popular:false },
+    { label:'🗓 7 дней',   days:7,   color:'#6B7280', price:'19₽ / 8₴',     desc:'1 неделя',  popular:false },
   ];
 
   render(`${navbar('plans')}

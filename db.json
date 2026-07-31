@@ -38,6 +38,19 @@
       "hwid": null,
       "hwidBanned": false,
       "createdAt": "2026-07-31T22:14:07.110Z"
+    },
+    {
+      "id": 1,
+      "uid": "000001",
+      "username": "Burmalda",
+      "email": "owner@appleclient.ru",
+      "password": "$2a$10$vR8hQJtatw54hGhYRuZGCuR0MbQ5b1s/46eer3HTQT3LW9R5WfPmO",
+      "role": "owner",
+      "subscription": true,
+      "subExpiry": null,
+      "hwid": null,
+      "hwidBanned": false,
+      "createdAt": "2026-07-31T22:26:07.757Z"
     }
   ],
   "keys": [
