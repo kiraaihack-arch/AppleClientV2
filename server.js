@@ -34,7 +34,7 @@ if (!db.data.keys)  db.data.keys  = [];
 // Дефолтный owner
 if (!db.data.users.find(u => u.role === "owner")) {
   db.data.users.push({
-    id: 1, uid: "000001",
+    id: 1, uid: "1",
     username: "Burmalda",
     email: "owner@appleclient.ru",
     password: await bcrypt.hash("admin123", 10),
