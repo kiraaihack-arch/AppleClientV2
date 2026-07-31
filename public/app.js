@@ -163,12 +163,12 @@ function showPlans() {
     </div>
     <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px;max-width:900px;margin:0 auto 60px">
       ${plans.map(p => `
-      <div style="background:#111118;border:1px solid ${p.popular ? p.color : 'rgba(255,255,255,0.06)'};border-radius:14px;padding:20px;text-align:center;position:relative;${p.popular?'transform:scale(1.04)':''}">
-        ${p.popular ? `<div style="position:absolute;top:-10px;left:50%;transform:translateX(-50%);background:${p.color};color:#000;font-size:10px;font-weight:700;padding:3px 10px;border-radius:20px;white-space:nowrap">🔥 ХИТ</div>` : ''}
+      <div style="background:#111118;border:1px solid ${p.popular ? p.color : 'rgba(255,255,255,0.06)'};border-radius:14px;padding:20px;text-align:center;position:relative">
+        ${p.popular ? `<div style="background:${p.color};color:#000;font-size:10px;font-weight:700;padding:3px 10px;border-radius:20px;display:inline-block;margin-bottom:8px">🔥 ХИТ</div>` : '<div style="height:26px"></div>'}
         <div style="font-size:28px;margin-bottom:8px">${p.label.split(' ')[0]}</div>
         <div style="color:${p.color};font-weight:700;font-size:14px">${p.label.slice(2)}</div>
         <div style="color:#6b7280;font-size:12px;margin:4px 0 12px">${p.desc}</div>
-        <div style="font-size:24px;font-weight:800;color:#fff;margin-bottom:14px">${p.price}</div>
+        <div style="font-size:18px;font-weight:800;color:#fff;margin-bottom:14px">${p.price}</div>
         <button class="btn btn-sm" style="background:${p.color};border:none;color:#000;font-weight:700;width:100%;padding:9px" onclick="window.open('https://t.me/Burmalda_jmv')">
           Купить
         </button>
@@ -177,7 +177,7 @@ function showPlans() {
         <div style="font-size:28px;margin-bottom:8px">🔄</div>
         <div style="color:#3B82F6;font-weight:700;font-size:14px">HWID Сброс</div>
         <div style="color:#6b7280;font-size:12px;margin:4px 0 12px">Смена устройства</div>
-        <div style="font-size:24px;font-weight:800;color:#fff;margin-bottom:14px">29₽ / 12₴</div>
+        <div style="font-size:18px;font-weight:800;color:#fff;margin-bottom:14px">29₽ / 12₴</div>
         <button class="btn btn-sm" style="background:#3B82F6;border:none;color:#fff;font-weight:700;width:100%;padding:9px" onclick="window.open('https://t.me/Burmalda_jmv')">
           Купить
         </button>
@@ -213,6 +213,10 @@ function showAuth(tab='login') {
         <div style="height:12px"></div>
         <label>Пароль</label>
         <input class="input" id="password" type="password" placeholder="Введите пароль...">
+      <div style="display:flex;gap:8px;align-items:center;margin-bottom:12px">
+        <div id="captcha-q" style="background:#1a1a24;border-radius:8px;padding:10px 16px;font-size:15px;font-weight:700;white-space:nowrap"></div>
+        <input class="input" id="captcha-a" placeholder="Ответ" style="width:90px">
+      </div>
         <div id="auth-err" class="error"></div>
         <button class="btn mt" onclick="doLogin()">ВОЙТИ</button>
       ` : `
@@ -224,11 +228,34 @@ function showAuth(tab='login') {
         <div style="height:12px"></div>
         <label>Пароль</label>
         <input class="input" id="reg-password" type="password" placeholder="Минимум 6 символов...">
+        <div style="height:12px"></div>
+        <div style="display:flex;gap:8px;align-items:center;margin-bottom:12px">
+          <div id="captcha-q" style="background:#1a1a24;border-radius:8px;padding:10px 16px;font-size:15px;font-weight:700;white-space:nowrap"></div>
+          <input class="input" id="captcha-a" placeholder="Ответ" style="width:90px">
+        </div>
         <div id="auth-err" class="error"></div>
         <button class="btn mt" onclick="doRegister()">СОЗДАТЬ АККАУНТ</button>
       `}
     </div>
   </div>`);
+  generateCaptcha();
+}
+
+let captchaAnswer = 0;
+
+function generateCaptcha() {
+  const a = Math.floor(Math.random() * 10) + 1;
+  const b = Math.floor(Math.random() * 10) + 1;
+  const ops = ['+', '-', '*'];
+  const op = ops[Math.floor(Math.random() * 2)]; // только + и -
+  captchaAnswer = op === '+' ? a + b : a - b;
+  const el = document.getElementById('captcha-q');
+  if (el) el.textContent = `${a} ${op} ${b} = ?`;
+}
+
+function checkCaptcha() {
+  const val = parseInt(document.getElementById('captcha-a')?.value);
+  return val === captchaAnswer;
 }
 
 async function doLogin() {
@@ -236,6 +263,7 @@ async function doLogin() {
   const password = document.getElementById('password').value.trim();
   const err = document.getElementById('auth-err');
   if (!login || !password) { err.textContent = 'Заполните все поля'; return; }
+  if (!checkCaptcha()) { err.textContent = 'Неверная капча'; generateCaptcha(); document.getElementById('captcha-a').value=''; return; }
   const res = await api('POST', '/api/login', { login, password });
   const data = await res.json();
   if (!res.ok) { err.textContent = data.message; return; }
@@ -249,6 +277,7 @@ async function doRegister() {
   const password = document.getElementById('reg-password').value.trim();
   const err = document.getElementById('auth-err');
   if (!username || !email || !password) { err.textContent = 'Заполните все поля'; return; }
+  if (!checkCaptcha()) { err.textContent = 'Неверная капча'; generateCaptcha(); document.getElementById('captcha-a').value=''; return; }
   const res = await api('POST', '/api/register', { username, email, password });
   const data = await res.json();
   if (!res.ok) { err.textContent = data.message; return; }
