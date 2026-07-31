@@ -173,6 +173,15 @@ function showPlans() {
           Купить
         </button>
       </div>`).join('')}
+      <div style="background:#111118;border:1px solid #3B82F6;border-radius:14px;padding:20px;text-align:center">
+        <div style="font-size:28px;margin-bottom:8px">🔄</div>
+        <div style="color:#3B82F6;font-weight:700;font-size:14px">HWID Сброс</div>
+        <div style="color:#6b7280;font-size:12px;margin:4px 0 12px">Смена устройства</div>
+        <div style="font-size:24px;font-weight:800;color:#fff;margin-bottom:14px">29₽ / 12₴</div>
+        <button class="btn btn-sm" style="background:#3B82F6;border:none;color:#fff;font-weight:700;width:100%;padding:9px" onclick="window.open('https://t.me/Burmalda_jmv')">
+          Купить
+        </button>
+      </div>
     </div>
     <div style="text-align:center;padding:24px;background:#111118;border-radius:16px;max-width:500px;margin:0 auto">
       <div style="font-size:24px;margin-bottom:8px">💬</div>
@@ -387,19 +396,31 @@ function renderAdmin() {
           Создать ключ
         </button>
       </div>`).join('')}
+      <div style="background:#1a1a24;border:1px solid #3B82F633;border-radius:12px;padding:20px;text-align:center">
+        <div style="font-size:24px;margin-bottom:8px">🔄</div>
+        <div style="font-weight:700;color:#3B82F6;font-size:15px">HWID Сброс</div>
+        <div style="color:#6b7280;font-size:13px;margin-top:4px">Смена устройства</div>
+        <button class="btn btn-sm mt" style="background:#3B82F6;border:none;color:#fff;font-weight:700" onclick="showGenKeys(0,'hwid')">
+          Создать ключ
+        </button>
+      </div>
     </div>`;
   } else {
     content = `
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
       <div style="font-weight:700">Ключей: ${allKeys.length}</div>
-      <button class="btn btn-sm" onclick="showGenKeys()">+ Создать ключи</button>
+      <div style="display:flex;gap:8px">
+        <button class="btn btn-sm" onclick="showGenKeys(30,'sub')">+ Ключ подписки</button>
+        <button class="btn btn-sm" style="background:#3B82F6" onclick="showGenKeys(0,'hwid')">🔄 HWID ключ</button>
+      </div>
     </div>
     <div style="overflow-x:auto">
     <table class="table">
-      <thead><tr><th>Ключ</th><th>Дней</th><th>Создан</th><th>Использован</th><th></th></tr></thead>
+      <thead><tr><th>Ключ</th><th>Тип</th><th>Дней</th><th>Создан</th><th>Использован</th><th></th></tr></thead>
       <tbody>
         ${allKeys.map(k => `<tr>
           <td style="font-family:monospace;font-size:12px">${k.key} <button class="copy-btn" onclick="copy('${k.key}')">copy</button></td>
+          <td><span style="color:${k.type==='hwid'?'#3B82F6':'#22c55e'};font-size:12px;font-weight:700">${k.type==='hwid'?'🔄 HWID':'🔑 Саб'}</span></td>
           <td>${k.days === 0 ? '∞' : k.days}</td>
           <td style="color:#6b7280">${k.createdBy}</td>
           <td style="color:${k.usedBy?'#22c55e':'#6b7280'}">${k.usedBy || '—'}</td>
@@ -537,16 +558,18 @@ async function deleteUser(id) {
 }
 
 
-function showGenKeys(defaultDays) {
+function showGenKeys(defaultDays, defaultType) {
+  const isHwid = defaultType === 'hwid';
   document.getElementById('app').insertAdjacentHTML('beforeend', `
   ${CSS}
   <div class="modal" id="gen-modal">
     <div class="modal-box">
-      <h3>🔑 Создать ключи</h3>
+      <h3>${isHwid ? '🔄 HWID ключ сброса' : '🔑 Создать ключи подписки'}</h3>
       <label>Количество (макс 50)</label>
       <input class="input mb" id="g-count" type="number" value="1" min="1" max="50">
-      <label>Дней подписки (0 = навсегда)</label>
-      <input class="input mb" id="g-days" type="number" value="${defaultDays !== undefined ? defaultDays : 30}" min="0">
+      ${!isHwid ? `<label>Дней подписки (0 = навсегда)</label>
+      <input class="input mb" id="g-days" type="number" value="${defaultDays !== undefined ? defaultDays : 30}" min="0">` : ''}
+      <input type="hidden" id="g-type" value="${defaultType || 'sub'}">
       <div style="display:flex;gap:8px;margin-top:12px">
         <button class="btn" onclick="genKeys()">Создать</button>
         <button class="btn btn-outline" onclick="document.getElementById('gen-modal').remove()">Отмена</button>
@@ -558,8 +581,9 @@ function showGenKeys(defaultDays) {
 
 async function genKeys() {
   const count = parseInt(document.getElementById('g-count').value);
-  const days = parseInt(document.getElementById('g-days').value);
-  const res = await api('POST', '/api/admin/keys', { count, days });
+  const days = parseInt(document.getElementById('g-days')?.value || '0');
+  const type = document.getElementById('g-type').value;
+  const res = await api('POST', '/api/admin/keys', { count, days, type });
   const data = await res.json();
   if (!res.ok) { alert(data.message); return; }
   document.getElementById('gen-result').innerHTML = data.keys.map(k =>

@@ -142,6 +142,18 @@ app.post("/api/activate", auth, async (req, res) => {
   if (!keyData) return res.status(404).json({ message: "Ключ не найден или использован" });
 
   const user = db.data.users.find(u => u.id === req.user.id);
+
+  // HWID reset ключ
+  if (keyData.type === "hwid") {
+    user.hwid = null;
+    user.hwidBanned = false;
+    keyData.usedBy = user.username;
+    keyData.usedAt = new Date().toISOString();
+    await db.write();
+    return res.json({ success: true, message: "HWID успешно сброшен!" });
+  }
+
+  // Обычный ключ подписки
   user.subscription = true;
   user.subExpiry = keyData.days === 0 ? null : new Date(Date.now() + keyData.days * 86400000).toISOString();
   keyData.usedBy = user.username;
@@ -222,11 +234,11 @@ app.put("/api/admin/users/:id", auth, async (req, res) => {
 // Создать ключи
 app.post("/api/admin/keys", auth, async (req, res) => {
   if (!canAdmin(req.user.role)) return res.status(403).json({ message: "Нет доступа" });
-  const { days = 30, count = 1 } = req.body;
+  const { days = 30, count = 1, type = "sub" } = req.body;
   const keys = [];
   for (let i = 0; i < Math.min(count, 50); i++) {
-    const key = `AC-${uuidv4().toUpperCase().slice(0,4)}-${uuidv4().toUpperCase().slice(0,4)}-${uuidv4().toUpperCase().slice(0,4)}`;
-    db.data.keys.push({ key, days, createdBy: req.user.username, createdAt: new Date().toISOString(), usedBy: null });
+    const key = `${type === "hwid" ? "HW" : "AC"}-${uuidv4().toUpperCase().slice(0,4)}-${uuidv4().toUpperCase().slice(0,4)}-${uuidv4().toUpperCase().slice(0,4)}`;
+    db.data.keys.push({ key, days, type, createdBy: req.user.username, createdAt: new Date().toISOString(), usedBy: null });
     keys.push(key);
   }
   await db.write();

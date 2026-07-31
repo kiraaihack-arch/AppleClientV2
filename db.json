@@ -2,46 +2,7 @@
   "users": [
     {
       "id": 1,
-      "uid": "000001",
-      "username": "Burmalda",
-      "email": "owner@appleclient.ru",
-      "password": "$2a$10$Fg0qcKNENwgAzaNIfQaKIO8gOtFRz6OVr.c44dhNsDyv./aZ3OOdq",
-      "role": "valodya",
-      "subscription": true,
-      "subExpiry": "2026-08-30T22:20:21.129Z",
-      "hwid": null,
-      "hwidBanned": false,
-      "createdAt": "2026-07-31T22:03:35.106Z"
-    },
-    {
-      "id": 1785535487861,
-      "uid": "2",
-      "username": "dezzka",
-      "email": "vustimenko893@gmail.com",
-      "password": "$2a$10$sIyVHhj0yVSF9cVWhPbK2ucPerONE8oB5Zz89OH13DE3Ch3.lM8LO",
-      "role": "drun",
-      "subscription": true,
-      "subExpiry": "2026-08-01T22:09:03.415Z",
-      "hwid": null,
-      "hwidBanned": false,
-      "createdAt": "2026-07-31T22:04:47.923Z"
-    },
-    {
-      "id": 1785536047047,
-      "uid": "3",
-      "username": "дарова",
-      "email": "delta@mail.ru",
-      "password": "$2a$10$bLjczHUcFUAob1x68.07RuPnfleIGpubilYeSkKa/ZtrSFDCvloo2",
-      "role": "valodya",
-      "subscription": true,
-      "subExpiry": null,
-      "hwid": null,
-      "hwidBanned": false,
-      "createdAt": "2026-07-31T22:14:07.110Z"
-    },
-    {
-      "id": 1,
-      "uid": "000001",
+      "uid": "1",
       "username": "Burmalda",
       "email": "owner@appleclient.ru",
       "password": "$2a$10$vR8hQJtatw54hGhYRuZGCuR0MbQ5b1s/46eer3HTQT3LW9R5WfPmO",
@@ -50,17 +11,37 @@
       "subExpiry": null,
       "hwid": null,
       "hwidBanned": false,
-      "createdAt": "2026-07-31T22:26:07.757Z"
+      "banned": false,
+      "createdAt": "2026-07-31T22:03:35.106Z"
+    },
+    {
+      "id": 1785535487861,
+      "uid": "2",
+      "username": "dezzka",
+      "email": "vustimenko893@gmail.com",
+      "password": "$2a$10$sIyVHhj0yVSF9cVWhPbK2ucPerONE8oB5Zz89OH13DE3Ch3.lM8LO",
+      "role": "owner",
+      "subscription": true,
+      "subExpiry": null,
+      "hwid": null,
+      "hwidBanned": false,
+      "banned": false,
+      "createdAt": "2026-07-31T22:04:47.923Z"
+    },
+    {
+      "id": 1785536047047,
+      "uid": "3",
+      "username": "дарова",
+      "email": "delta@mail.ru",
+      "password": "$2a$10$bLjczHUcFUAob1x68.07RuPnfleIGpubilYeSkKa/ZtrSFDCvloo2",
+      "role": "user",
+      "subscription": false,
+      "subExpiry": null,
+      "hwid": null,
+      "hwidBanned": false,
+      "banned": false,
+      "createdAt": "2026-07-31T22:14:07.110Z"
     }
   ],
-  "keys": [
-    {
-      "key": "AC-296E-C4A9-CB9D",
-      "days": 1,
-      "createdBy": "dezzka",
-      "createdAt": "2026-07-31T22:08:58.272Z",
-      "usedBy": "dezzka",
-      "usedAt": "2026-07-31T22:09:03.415Z"
-    }
-  ]
+  "keys": []
 }
