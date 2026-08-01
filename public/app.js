@@ -226,6 +226,10 @@ function connectIRC() {
     const data = JSON.parse(e.data);
     if (data.type === 'history') data.messages.forEach(addMsg);
     if (data.type === 'message') addMsg(data.message);
+    if (data.type === 'clear') {
+      const box = document.getElementById('irc-msgs');
+      if (box) { box.innerHTML = ''; box.insertAdjacentHTML('beforeend', `<div style="color:#6b7280;font-size:12px;text-align:center">— Чат очищен —</div>`); }
+    }
   };
 
   ircWs.onclose = () => {
@@ -405,8 +409,19 @@ async function showCabinet() {
         </div>` : ''}
       </div>
     </div>
+    <div class="card" style="margin-top:20px">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
+        <h3 style="margin:0">💬 IRC Чат</h3>
+        <span style="color:#6b7280;font-size:12px">— очищается каждые 30 мин</span>
+      </div>
+      <div id="irc-msgs" style="height:280px;overflow-y:auto;margin-bottom:12px;display:flex;flex-direction:column;gap:6px;background:#0a0a0f;border-radius:10px;padding:12px"></div>
+      <div style="display:flex;gap:8px">
+        <input class="input" id="irc-input" placeholder="Сообщение..." style="flex:1" onkeydown="if(event.key==='Enter')sendIRC()">
+        <button class="btn btn-sm" style="white-space:nowrap" onclick="sendIRC()">Отправить</button>
+      </div>
+    </div>
   </div>`);
-}
+  connectIRC();
 
 async function downloadClient() {
   const res = await api('GET', '/api/download');

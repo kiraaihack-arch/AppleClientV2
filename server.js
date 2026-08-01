@@ -276,6 +276,14 @@ const wss = new WebSocketServer({ server: httpServer });
 const chatHistory = [];
 const MAX_HISTORY = 100;
 
+// Очистка чата каждые 30 минут
+setInterval(() => {
+  chatHistory.length = 0;
+  const payload = JSON.stringify({ type: 'clear' });
+  wss.clients.forEach(c => { if(c.readyState===1) c.send(payload); });
+  console.log('IRC chat cleared');
+}, 30 * 60 * 1000);
+
 wss.on("connection", (ws, req) => {
   // Отправляем историю новому юзеру
   ws.send(JSON.stringify({ type: "history", messages: chatHistory }));

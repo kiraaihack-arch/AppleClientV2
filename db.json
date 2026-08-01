@@ -1,1 +1,31 @@
-{"users":[],"keys":[]}
+{
+  "users": [
+    {
+      "id": 1,
+      "uid": "1",
+      "username": "Burmalda",
+      "email": "owner@appleclient.ru",
+      "password": "$2a$10$e4liwIQECmR8bP0yPmCvFegULa8Np9GJU0gKErLaOQQMh2evpm7Bi",
+      "role": "owner",
+      "subscription": true,
+      "subExpiry": null,
+      "hwid": null,
+      "hwidBanned": false,
+      "createdAt": "2026-08-01T06:25:23.836Z"
+    },
+    {
+      "id": 1785565601856,
+      "uid": "2",
+      "username": "dezzka",
+      "email": "delta@mail.ru",
+      "password": "$2a$10$yIAwHk5TuP4HfoVNiL2b1ul0hoi2oC105vXkY1k2VWaAP6hoFJ2by",
+      "role": "user",
+      "subscription": false,
+      "subExpiry": null,
+      "hwid": null,
+      "hwidBanned": false,
+      "createdAt": "2026-08-01T06:26:41.917Z"
+    }
+  ],
+  "keys": []
+}
