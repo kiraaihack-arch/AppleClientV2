@@ -37,7 +37,11 @@ const ROLES = {
 };
 
 // DB
-const adapter = new JSONFile(path.join(__dirname, "db.json"));
+const DB_PATH = process.env.RAILWAY_VOLUME_MOUNT_PATH 
+  ? path.join(process.env.RAILWAY_VOLUME_MOUNT_PATH, "db.json")
+  : path.join(__dirname, "db.json");
+
+const adapter = new JSONFile(DB_PATH);
 const db = new Low(adapter, { users: [], keys: [] });
 await db.read();
 if (!db.data.users) db.data.users = [];
