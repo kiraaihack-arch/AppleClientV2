@@ -102,6 +102,7 @@ function navbar(page) {
     <div class="nav-links">
       <button class="nav-btn ${page==='home'?'active':''}" onclick="showHome()">Главная</button>
       <button class="nav-btn ${page==='plans'?'active':''}" onclick="showPlans()">Тарифы</button>
+      <button class="nav-btn ${page==='irc'?'active':''}" onclick="showIRC()">💬 IRC</button>
       ${me ? `
         <button class="nav-btn ${page==='cabinet'?'active':''}" onclick="showCabinet()">Кабинет</button>
         ${isAdmin ? `<button class="nav-btn ${page==='admin'?'active':''}" onclick="showAdmin()">⚙ Панель</button>` : ''}
@@ -137,7 +138,7 @@ function showHome() {
       <div class="feature"><div class="feature-icon">🔒</div><h3>HWID защита</h3><p>Привязка к железу — защита от распространения</p></div>
       <div class="feature"><div class="feature-icon">🎨</div><h3>Кастомизация</h3><p>Гибкие настройки под любой стиль игры</p></div>
       <div class="feature"><div class="feature-icon">🛡</div><h3>Безопасность</h3><p>Регулярные обновления и защита аккаунта</p></div>
-      <div class="feature"><div class="feature-icon">💎</div><h3>Премиум поддержка</h3><p>Быстрая помощь через Telegram</p></div>
+      <div class="feature"><div class="feature-icon">💎</div><h3>Поддержка</h3><p>Быстрая помощь через Telegram</p></div>
       <div class="feature"><div class="feature-icon">🔑</div><h3>Ключи активации</h3><p>Простая система активации подписки</p></div>
     </div>
   </div>`);
@@ -192,6 +193,71 @@ function showPlans() {
       </button>
     </div>
   </div>`);
+}
+
+// ── IRC ───────────────────────────────────────────────────
+let ircWs = null;
+
+function showIRC() {
+  if (!me) { showAuth(); return; }
+  render(`${navbar('irc')}
+  <div class="page">
+    <div style="max-width:800px;margin:24px auto">
+      <h2 style="margin-bottom:4px">💬 IRC Чат</h2>
+      <p style="color:#6b7280;font-size:14px;margin-bottom:16px">Общий чат для всех пользователей</p>
+      <div class="card" style="padding:0;overflow:hidden">
+        <div id="irc-msgs" style="height:420px;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:8px"></div>
+        <div style="border-top:1px solid rgba(255,255,255,0.06);padding:12px;display:flex;gap:8px">
+          <input class="input" id="irc-input" placeholder="Сообщение..." style="flex:1" onkeydown="if(event.key==='Enter')sendIRC()">
+          <button class="btn btn-sm" style="white-space:nowrap" onclick="sendIRC()">Отправить</button>
+        </div>
+      </div>
+    </div>
+  </div>`);
+  connectIRC();
+}
+
+function connectIRC() {
+  if (ircWs) ircWs.close();
+  const proto = location.protocol === 'https:' ? 'wss' : 'ws';
+  ircWs = new WebSocket(`${proto}://${location.host}`);
+
+  ircWs.onmessage = (e) => {
+    const data = JSON.parse(e.data);
+    if (data.type === 'history') data.messages.forEach(addMsg);
+    if (data.type === 'message') addMsg(data.message);
+  };
+
+  ircWs.onclose = () => {
+    const box = document.getElementById('irc-msgs');
+    if (box) box.insertAdjacentHTML('beforeend', `<div style="color:#6b7280;font-size:12px;text-align:center">Отключено</div>`);
+  };
+}
+
+function addMsg(msg) {
+  const box = document.getElementById('irc-msgs');
+  if (!box) return;
+  const r = ROLES[msg.role] || ROLES.user;
+  const time = new Date(msg.time).toLocaleTimeString('ru', {hour:'2-digit',minute:'2-digit'});
+  box.insertAdjacentHTML('beforeend', `
+    <div style="display:flex;gap:8px;align-items:flex-start">
+      <span style="color:#6b7280;font-size:11px;min-width:36px;margin-top:3px">${time}</span>
+      <span style="color:${r.color};font-weight:700;font-size:13px;white-space:nowrap">${r.icon} ${msg.username}</span>
+      <span style="font-size:14px;word-break:break-word">${escHtml(msg.text)}</span>
+    </div>`);
+  box.scrollTop = box.scrollHeight;
+}
+
+function sendIRC() {
+  const input = document.getElementById('irc-input');
+  const text = input?.value.trim();
+  if (!text || !ircWs || ircWs.readyState !== 1) return;
+  ircWs.send(JSON.stringify({ type: 'message', token, text }));
+  input.value = '';
+}
+
+function escHtml(t) {
+  return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 }
 
 // ── АВТОРИЗАЦИЯ ───────────────────────────────────────────

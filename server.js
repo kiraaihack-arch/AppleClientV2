@@ -7,6 +7,8 @@ import { JSONFile } from "lowdb/node";
 import { v4 as uuidv4 } from "uuid";
 import path from "path";
 import { fileURLToPath } from "url";
+import { createServer } from "http";
+import { WebSocketServer } from "ws";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const app = express();
@@ -268,4 +270,48 @@ function publicUser(u) {
 
 app.get("*", (req, res) => res.sendFile(path.join(__dirname, "public", "index.html")));
 
-app.listen(PORT, () => console.log(`\n  AppleClient: http://localhost:${PORT}\n`));
+// ── WEBSOCKET IRC ─────────────────────────────────────────
+const httpServer = createServer(app);
+const wss = new WebSocketServer({ server: httpServer });
+const chatHistory = [];
+const MAX_HISTORY = 100;
+
+wss.on("connection", (ws, req) => {
+  // Отправляем историю новому юзеру
+  ws.send(JSON.stringify({ type: "history", messages: chatHistory }));
+
+  ws.on("message", (raw) => {
+    try {
+      const data = JSON.parse(raw);
+      if (data.type === "message") {
+        // Проверяем токен
+        let user = null;
+        try {
+          user = jwt.verify(data.token, JWT_SECRET);
+        } catch { return; }
+
+        const dbUser = db.data.users.find(u => u.id === user.id);
+        if (!dbUser || dbUser.banned) return;
+
+        const msg = {
+          id: Date.now(),
+          username: dbUser.username,
+          role: dbUser.role,
+          text: String(data.text).slice(0, 300),
+          time: new Date().toISOString()
+        };
+
+        chatHistory.push(msg);
+        if (chatHistory.length > MAX_HISTORY) chatHistory.shift();
+
+        // Рассылаем всем
+        const payload = JSON.stringify({ type: "message", message: msg });
+        wss.clients.forEach(client => {
+          if (client.readyState === 1) client.send(payload);
+        });
+      }
+    } catch {}
+  });
+});
+
+httpServer.listen(PORT, () => console.log(`\n  AppleClient: http://localhost:${PORT}\n`));
