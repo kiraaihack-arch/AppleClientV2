@@ -9,6 +9,16 @@ import path from "path";
 import { fileURLToPath } from "url";
 import { createServer } from "http";
 import { WebSocketServer } from "ws";
+import nodemailer from "nodemailer";
+
+const MAIL_USER = process.env.MAIL_USER || "Algolgreta@gmail.com";
+const MAIL_PASS = process.env.MAIL_PASS || "";
+const SITE_URL  = process.env.SITE_URL  || "http://localhost:3001";
+
+const mailer = nodemailer.createTransport({
+  service: "gmail",
+  auth: { user: MAIL_USER, pass: MAIL_PASS }
+});
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const app = express();
@@ -32,6 +42,8 @@ const db = new Low(adapter, { users: [], keys: [] });
 await db.read();
 if (!db.data.users) db.data.users = [];
 if (!db.data.keys)  db.data.keys  = [];
+if (!db.data.resetTokens) db.data.resetTokens = [];
+if (!db.data.loginLogs) db.data.loginLogs = [];
 
 // Дефолтный owner
 if (!db.data.users.find(u => u.role === "owner")) {
@@ -124,6 +136,10 @@ app.post("/api/login", async (req, res) => {
     }
 
     const token = jwt.sign({ id: user.id, username: user.username, role: user.role }, JWT_SECRET, { expiresIn: "30d" });
+    const ip = req.headers['x-forwarded-for']?.split(',')[0]?.trim() || req.socket.remoteAddress || 'unknown';
+    db.data.loginLogs.unshift({ id: Date.now(), userId: user.id, username: user.username, role: user.role, ip, ua: (req.headers['user-agent']||'').slice(0,80), time: new Date().toISOString() });
+    if (db.data.loginLogs.length > 500) db.data.loginLogs = db.data.loginLogs.slice(0, 500);
+    await db.write();
     res.setHeader("Authorization", `Bearer ${token}`);
     res.json({ success: true, user: publicUser(user) });
   } catch(e) { res.status(500).json({ message: "Ошибка сервера" }); }
@@ -164,7 +180,86 @@ app.post("/api/activate", auth, async (req, res) => {
   res.json({ success: true, message: `Подписка активирована на ${keyData.days === 0 ? "навсегда" : keyData.days + " дней"}!`, subExpiry: user.subExpiry });
 });
 
-// ── СКАЧАТЬ ЛАУНЧЕР ───────────────────────────────────────
+// ── СБРОС ПАРОЛЯ (запрос) ────────────────────────────────
+app.post("/api/forgot-password", async (req, res) => {
+  const { email } = req.body;
+  if (!email) return res.status(400).json({ message: "Введите email" });
+  const user = db.data.users.find(u => u.email.toLowerCase() === email.trim().toLowerCase());
+  if (!user) return res.json({ success: true }); // не раскрываем что юзер не найден
+
+  const token = uuidv4();
+  const expires = Date.now() + 30 * 60 * 1000; // 30 минут
+  db.data.resetTokens = db.data.resetTokens.filter(t => t.userId !== user.id);
+  db.data.resetTokens.push({ token, userId: user.id, expires });
+  await db.write();
+
+  const link = `${SITE_URL}/reset?token=${token}`;
+  try {
+    await mailer.sendMail({
+      from: `AppleClient <${MAIL_USER}>`,
+      to: user.email,
+      subject: "Сброс пароля AppleClient",
+      html: `<div style="background:#0a0a0f;color:#fff;padding:32px;font-family:Arial">
+        <h2 style="color:#a855f7">🍎 AppleClient</h2>
+        <p>Вы запросили сброс пароля для аккаунта <b>${user.username}</b>.</p>
+        <a href="${link}" style="display:inline-block;margin:20px 0;background:linear-gradient(90deg,#7c3aed,#a855f7);color:#fff;padding:12px 28px;border-radius:8px;text-decoration:none;font-weight:bold">Сбросить пароль</a>
+        <p style="color:#6b7280;font-size:13px">Ссылка действительна 30 минут. Если вы не запрашивали сброс — игнорируйте это письмо.</p>
+      </div>`
+    });
+  } catch(e) { console.error("Mail error:", e.message); }
+
+  res.json({ success: true, message: "Письмо отправлено на email" });
+});
+
+// ── СБРОС ПАРОЛЯ (применение) ────────────────────────────
+app.post("/api/reset-password", async (req, res) => {
+  const { token, password } = req.body;
+  if (!token || !password) return res.status(400).json({ message: "Неверный запрос" });
+  if (password.length < 6) return res.status(400).json({ message: "Пароль минимум 6 символов" });
+
+  const resetData = db.data.resetTokens.find(t => t.token === token && t.expires > Date.now());
+  if (!resetData) return res.status(400).json({ message: "Ссылка недействительна или истекла" });
+
+  const user = db.data.users.find(u => u.id === resetData.userId);
+  if (!user) return res.status(404).json({ message: "Пользователь не найден" });
+
+  user.password = await bcrypt.hash(password, 10);
+  db.data.resetTokens = db.data.resetTokens.filter(t => t.token !== token);
+  await db.write();
+
+  res.json({ success: true, message: "Пароль успешно изменён!" });
+});
+
+// ── СМЕНА ПАРОЛЯ В КАБИНЕТЕ ──────────────────────────────
+app.post("/api/change-password", auth, async (req, res) => {
+  const { oldPassword, newPassword } = req.body;
+  if (!oldPassword || !newPassword) return res.status(400).json({ message: "Заполните все поля" });
+  if (newPassword.length < 6) return res.status(400).json({ message: "Новый пароль минимум 6 символов" });
+
+  const user = db.data.users.find(u => u.id === req.user.id);
+  if (!await bcrypt.compare(oldPassword, user.password))
+    return res.status(401).json({ message: "Неверный текущий пароль" });
+
+  user.password = await bcrypt.hash(newPassword, 10);
+  await db.write();
+  res.json({ success: true, message: "Пароль изменён!" });
+});
+
+// ── СБРОС ПАРОЛЯ АДМИНОМ ─────────────────────────────────
+app.put("/api/admin/users/:id/password", auth, async (req, res) => {
+  if (!canAdmin(req.user.role)) return res.status(403).json({ message: "Нет доступа" });
+  const { password } = req.body;
+  if (!password || password.length < 6) return res.status(400).json({ message: "Пароль минимум 6 символов" });
+
+  const user = db.data.users.find(u => u.id === Number(req.params.id));
+  if (!user) return res.status(404).json({ message: "Не найден" });
+
+  user.password = await bcrypt.hash(password, 10);
+  await db.write();
+  res.json({ success: true, message: "Пароль сброшен" });
+});
+
+
 app.get("/api/download", auth, (req, res) => {
   const user = db.data.users.find(u => u.id === req.user.id);
   if (!user?.subscription) return res.status(403).json({ message: "Нет подписки", tg: "https://t.me/Burmalda_jmv" });
@@ -193,6 +288,12 @@ app.delete("/api/admin/users/:id", auth, async (req, res) => {
   db.data.users = db.data.users.filter(u => u.id !== Number(req.params.id));
   await db.write();
   res.json({ success: true });
+});
+
+// Логи входов (только owner)
+app.get("/api/admin/logs", auth, (req, res) => {
+  if (req.user.role !== "owner") return res.status(403).json({ message: "Только для владельца" });
+  res.json({ logs: db.data.loginLogs });
 });
 
 // Список юзеров

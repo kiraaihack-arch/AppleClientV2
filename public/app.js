@@ -46,6 +46,7 @@ function navbar(page) {
     <div class="nav-links">
       <button class="nav-btn ${page==='home'?'active':''}" onclick="showHome()">Главная</button>
       <button class="nav-btn ${page==='plans'?'active':''}" onclick="showPlans()">Тарифы</button>
+      <button class="nav-btn ${page==='rules'?'active':''}" onclick="showRules()">📜 Правила</button>
       <button class="nav-btn ${page==='irc'?'active':''}" onclick="showIRC()">💬 IRC</button>
       ${me ? `
         <button class="nav-btn ${page==='cabinet'?'active':''}" onclick="showCabinet()">Кабинет</button>
@@ -84,6 +85,68 @@ function showHome() {
       <div class="feature"><div class="feature-icon">🛡</div><h3>Безопасность</h3><p>Регулярные обновления и защита аккаунта</p></div>
       <div class="feature"><div class="feature-icon">💎</div><h3>Поддержка</h3><p>Быстрая помощь через Telegram</p></div>
       <div class="feature"><div class="feature-icon">🔑</div><h3>Ключи активации</h3><p>Простая система активации подписки</p></div>
+    </div>
+  </div>`);
+}
+
+// ── ПРАВИЛА ───────────────────────────────────────────────
+function showRules() {
+  render(`${navbar('rules')}
+  <div class="page" style="max-width:800px;margin:0 auto">
+    <div class="card" style="margin-top:24px">
+      <h2 style="margin-bottom:4px">📜 Правила использования AppleClient</h2>
+      <p style="color:#6b7280;font-size:13px;margin-bottom:24px">Последнее обновление: 2026 год</p>
+
+      <div style="display:flex;flex-direction:column;gap:20px">
+        <div style="background:#1a1a24;border-radius:12px;padding:20px;border-left:3px solid #a855f7">
+          <h3 style="color:#a855f7;margin-bottom:8px">⚠️ Общие положения</h3>
+          <p style="color:#9ca3af;font-size:14px;line-height:1.6">AppleClient — платный Minecraft клиент, разработанный в 2026 году. Проект является независимым и <b style="color:#fff">не связан с Mojang, Microsoft или любыми официальными структурами Minecraft</b>.</p>
+        </div>
+
+        <div style="background:#1a1a24;border-radius:12px;padding:20px;border-left:3px solid #ef4444">
+          <h3 style="color:#ef4444;margin-bottom:8px">🚫 Запрещено</h3>
+          <ul style="color:#9ca3af;font-size:14px;line-height:1.8;padding-left:20px">
+            <li><b style="color:#fff">Продажа аккаунта</b> — передача, продажа или сдача в аренду своего аккаунта третьим лицам</li>
+            <li><b style="color:#fff">Распространение клиента</b> — раздача, слив или публикация файлов клиента</li>
+            <li><b style="color:#fff">Чарджбек</b> — незаконный возврат средств через банк</li>
+            <li><b style="color:#fff">Обход бана</b> — создание новых аккаунтов после блокировки</li>
+            <li><b style="color:#fff">Мошенничество</b> — любые попытки обмануть других пользователей или администрацию</li>
+          </ul>
+        </div>
+
+        <div style="background:#1a1a24;border-radius:12px;padding:20px;border-left:3px solid #ef4444">
+          <h3 style="color:#ef4444;margin-bottom:8px">🔨 Наказания</h3>
+          <ul style="color:#9ca3af;font-size:14px;line-height:1.8;padding-left:20px">
+            <li>Нарушение правил влечёт <b style="color:#fff">бан аккаунта без возврата средств</b></li>
+            <li>При продаже аккаунта — <b style="color:#fff">бан продавца и покупателя</b></li>
+            <li>При сливе клиента — <b style="color:#fff">бан + сброс HWID заблокирован навсегда</b></li>
+          </ul>
+        </div>
+
+        <div style="background:#1a1a24;border-radius:12px;padding:20px;border-left:3px solid #22c55e">
+          <h3 style="color:#22c55e;margin-bottom:8px">✅ Разрешено</h3>
+          <ul style="color:#9ca3af;font-size:14px;line-height:1.8;padding-left:20px">
+            <li>Использовать клиент на своём устройстве</li>
+            <li>Делиться своими впечатлениями и отзывами</li>
+            <li>Обращаться в поддержку по любым вопросам</li>
+          </ul>
+        </div>
+
+        <div style="background:#1a1a24;border-radius:12px;padding:20px;border-left:3px solid #3B82F6">
+          <h3 style="color:#3B82F6;margin-bottom:8px">📋 Подписка</h3>
+          <ul style="color:#9ca3af;font-size:14px;line-height:1.8;padding-left:20px">
+            <li>Без активной подписки скачивание клиента <b style="color:#fff">недоступно</b></li>
+            <li>Подписка привязана к <b style="color:#fff">одному устройству (HWID)</b></li>
+            <li>Для смены устройства необходимо <b style="color:#fff">купить сброс HWID</b></li>
+            <li>Для покупки подписки обратитесь: <a href="https://t.me/Burmalda_jmv" style="color:#a855f7" target="_blank">@Burmalda_jmv</a></li>
+          </ul>
+        </div>
+
+        <div style="text-align:center;padding:20px;color:#6b7280;font-size:13px">
+          © 2026 AppleClient. Все права защищены.<br>
+          Проект не связан с Mojang Studios или Microsoft Corporation.
+        </div>
+      </div>
     </div>
   </div>`);
 }
@@ -208,6 +271,117 @@ function escHtml(t) {
   return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 }
 
+function showForgot() {
+  render(`${navbar('')}
+  <div class="page" style="max-width:420px;margin:0 auto">
+    <div class="card" style="margin-top:60px">
+      <h3>🔑 Сброс пароля</h3>
+      <p style="color:#6b7280;font-size:14px;margin-bottom:16px">Введите email — отправим ссылку для сброса пароля</p>
+      <label>Email</label>
+      <input class="input mb" id="forgot-email" placeholder="your@email.com">
+      <div id="forgot-msg" style="font-size:13px;margin-bottom:12px"></div>
+      <button class="btn" onclick="doForgot()">Отправить письмо</button>
+      <div style="text-align:center;margin-top:12px">
+        <button style="background:none;border:none;color:#6b7280;font-size:12px;cursor:pointer;text-decoration:underline" onclick="showAuth('login')">← Назад ко входу</button>
+      </div>
+    </div>
+  </div>`);
+}
+
+async function doForgot() {
+  const email = document.getElementById('forgot-email').value.trim();
+  const msg = document.getElementById('forgot-msg');
+  if (!email) { msg.style.color='#ef4444'; msg.textContent='Введите email'; return; }
+  const res = await fetch('/api/forgot-password', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ email }) });
+  const data = await res.json();
+  msg.style.color = res.ok ? '#22c55e' : '#ef4444';
+  msg.textContent = data.message || 'Письмо отправлено если email зарегистрирован';
+}
+
+function showResetPassword(token) {
+  render(`${navbar('')}
+  <div class="page" style="max-width:420px;margin:0 auto">
+    <div class="card" style="margin-top:60px">
+      <h3>🔒 Новый пароль</h3>
+      <label>Новый пароль</label>
+      <input class="input mb" id="new-pass" type="password" placeholder="Минимум 6 символов">
+      <label>Подтвердите пароль</label>
+      <input class="input mb" id="new-pass2" type="password" placeholder="Повторите пароль">
+      <div id="reset-msg" style="font-size:13px;margin-bottom:12px"></div>
+      <button class="btn" onclick="doReset('${token}')">Сохранить пароль</button>
+    </div>
+  </div>`);
+}
+
+async function doReset(token) {
+  const password = document.getElementById('new-pass').value.trim();
+  const password2 = document.getElementById('new-pass2').value.trim();
+  const msg = document.getElementById('reset-msg');
+  if (password !== password2) { msg.style.color='#ef4444'; msg.textContent='Пароли не совпадают'; return; }
+  const res = await fetch('/api/reset-password', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ token, password }) });
+  const data = await res.json();
+  if (res.ok) { msg.style.color='#22c55e'; msg.textContent=data.message; setTimeout(()=>showAuth('login'), 2000); }
+  else { msg.style.color='#ef4444'; msg.textContent=data.message; }
+}
+
+function showChangePassword() {
+  document.getElementById('app').insertAdjacentHTML('beforeend', `
+  <div class="modal" id="change-pass-modal">
+    <div class="modal-box">
+      <h3>🔒 Смена пароля</h3>
+      <label>Текущий пароль</label>
+      <input class="input mb" id="cp-old" type="password" placeholder="Текущий пароль">
+      <label>Новый пароль</label>
+      <input class="input mb" id="cp-new" type="password" placeholder="Минимум 6 символов">
+      <label>Подтвердите</label>
+      <input class="input mb" id="cp-new2" type="password" placeholder="Повторите пароль">
+      <div id="cp-msg" style="font-size:13px;margin-bottom:12px"></div>
+      <div style="display:flex;gap:8px">
+        <button class="btn" onclick="doChangePassword()">Сохранить</button>
+        <button class="btn btn-outline" onclick="document.getElementById('change-pass-modal').remove()">Отмена</button>
+      </div>
+    </div>
+  </div>`);
+}
+
+async function doChangePassword() {
+  const oldPassword = document.getElementById('cp-old').value.trim();
+  const newPassword = document.getElementById('cp-new').value.trim();
+  const newPassword2 = document.getElementById('cp-new2').value.trim();
+  const msg = document.getElementById('cp-msg');
+  if (newPassword !== newPassword2) { msg.style.color='#ef4444'; msg.textContent='Пароли не совпадают'; return; }
+  const res = await api('POST', '/api/change-password', { oldPassword, newPassword });
+  const data = await res.json();
+  if (res.ok) { msg.style.color='#22c55e'; msg.textContent=data.message; setTimeout(()=>document.getElementById('change-pass-modal').remove(), 1500); }
+  else { msg.style.color='#ef4444'; msg.textContent=data.message; }
+}
+
+function showAdminResetPassword(id, username) {
+  document.getElementById('app').insertAdjacentHTML('beforeend', `
+  <div class="modal" id="admin-reset-modal">
+    <div class="modal-box">
+      <h3>🔒 Сброс пароля: ${username}</h3>
+      <label>Новый пароль</label>
+      <input class="input mb" id="ar-pass" type="password" placeholder="Минимум 6 символов">
+      <div id="ar-msg" style="font-size:13px;margin-bottom:12px"></div>
+      <div style="display:flex;gap:8px">
+        <button class="btn" onclick="doAdminResetPassword(${id})">Сохранить</button>
+        <button class="btn btn-outline" onclick="document.getElementById('admin-reset-modal').remove()">Отмена</button>
+      </div>
+    </div>
+  </div>`);
+}
+
+async function doAdminResetPassword(id) {
+  const password = document.getElementById('ar-pass').value.trim();
+  const msg = document.getElementById('ar-msg');
+  if (!password) { msg.style.color='#ef4444'; msg.textContent='Введите пароль'; return; }
+  const res = await api('PUT', `/api/admin/users/${id}/password`, { password });
+  const data = await res.json();
+  if (res.ok) { msg.style.color='#22c55e'; msg.textContent=data.message; setTimeout(()=>document.getElementById('admin-reset-modal').remove(), 1500); }
+  else { msg.style.color='#ef4444'; msg.textContent=data.message; }
+}
+
 // ── АВТОРИЗАЦИЯ ───────────────────────────────────────────
 function showAuth(tab='login') {
   render(`${navbar('')}
@@ -233,6 +407,9 @@ function showAuth(tab='login') {
       </div>
         <div id="auth-err" class="error"></div>
         <button class="btn mt" onclick="doLogin()">ВОЙТИ</button>
+        <div style="text-align:center;margin-top:12px">
+          <button style="background:none;border:none;color:#6b7280;font-size:12px;cursor:pointer;text-decoration:underline" onclick="showForgot()">Забыли пароль?</button>
+        </div>
       ` : `
         <label>Никнейм</label>
         <input class="input" id="reg-username" placeholder="Ваш ник...">
@@ -325,6 +502,7 @@ async function showCabinet() {
           <div style="font-size:13px;margin-bottom:8px;display:flex;justify-content:space-between"><span style="color:#6b7280">Email</span><span>${me.email}</span></div>
           <div style="font-size:13px;margin-bottom:8px;display:flex;justify-content:space-between"><span style="color:#6b7280">HWID</span><span>${me.hwid || '❌ Не привязан'}</span></div>
           <div style="font-size:13px;display:flex;justify-content:space-between"><span style="color:#6b7280">Регистрация</span><span>${new Date(me.createdAt).toLocaleDateString()}</span></div>
+          <button class="btn btn-outline" style="margin-top:12px;font-size:12px;padding:8px" onclick="showChangePassword()">🔒 Сменить пароль</button>
         </div>
       </div>
       <div>
@@ -404,11 +582,12 @@ async function showAdmin() {
 
 function canAdmin() { return me && ['owner','admin'].includes(me.role); }
 
-function renderAdmin() {
+async function renderAdmin() {
   const tabs = [
     {id:'users', label:'👥 Пользователи'},
     ...(canAdmin() ? [{id:'keys', label:'🔑 Ключи'}] : []),
     {id:'plans', label:'💎 Тарифы'},
+    ...(me.role === 'owner' ? [{id:'logs', label:'📋 Логи'}] : []),
   ];
 
   let content = '';
@@ -460,6 +639,27 @@ function renderAdmin() {
         </button>
       </div>
     </div>`;
+  } else if (adminTab === 'logs') {
+    const logsRes = await api('GET', '/api/admin/logs');
+    const logs = logsRes.ok ? (await logsRes.json()).logs : [];
+    content = `
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+      <div style="font-weight:700">Последние входы: ${logs.length}</div>
+    </div>
+    <div style="overflow-x:auto">
+    <table class="table">
+      <thead><tr><th>Время</th><th>Юзер</th><th>Роль</th><th>IP</th><th>Устройство</th></tr></thead>
+      <tbody>
+        ${logs.map(l => `<tr>
+          <td style="color:#6b7280;font-size:12px;white-space:nowrap">${new Date(l.time).toLocaleString('ru')}</td>
+          <td><strong>${l.username}</strong></td>
+          <td>${roleTag(l.role)}</td>
+          <td style="font-family:monospace;font-size:12px;color:#22c55e">${l.ip}</td>
+          <td style="color:#6b7280;font-size:11px;max-width:200px;overflow:hidden;text-overflow:ellipsis">${l.ua}</td>
+        </tr>`).join('')}
+      </tbody>
+    </table>
+    </div>`;
   } else {
     content = `
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
@@ -509,6 +709,7 @@ function renderUsersRows(users) {
     <td>
       <div style="display:flex;gap:4px;flex-wrap:wrap">
         <button class="btn btn-sm" onclick="showEditUser(${u.id})">✏</button>
+        <button class="btn btn-sm" style="background:#F59E0B" onclick="showAdminResetPassword(${u.id},'${u.username}')">🔑</button>
         ${canAdmin() ? `
           <button class="btn btn-sm ${u.banned?'btn-green':'btn-red'}" onclick="banUser(${u.id})">${u.banned?'🔓':'🔒'}</button>
           <button class="btn btn-sm btn-red" onclick="deleteUser(${u.id})">🗑</button>
