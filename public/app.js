@@ -33,66 +33,10 @@ function subBadge(user) {
   return `<span style="color:#22c55e;font-size:12px">✅ до ${new Date(user.subExpiry).toLocaleDateString()}</span>`;
 }
 
-const CSS = `
-<style>
-.page{max-width:1100px;margin:0 auto;padding:24px 16px}
-.nav{background:#111118;border-bottom:1px solid rgba(255,255,255,0.06);padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:60px}
-.nav-logo{font-size:20px;font-weight:700;background:linear-gradient(90deg,#7c3aed,#a855f7);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.nav-links{display:flex;gap:8px}
-.nav-btn{background:transparent;border:none;color:#9ca3af;padding:8px 14px;border-radius:8px;cursor:pointer;font-size:14px;transition:.2s}
-.nav-btn:hover{background:rgba(255,255,255,0.05);color:#fff}
-.nav-btn.active{color:#a855f7}
-.nav-btn-primary{background:linear-gradient(90deg,#7c3aed,#a855f7);color:#fff;border:none;padding:8px 18px;border-radius:8px;cursor:pointer;font-size:14px;font-weight:600}
-.card{background:#111118;border:1px solid rgba(255,255,255,0.06);border-radius:16px;padding:28px}
-.input{width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:12px 16px;color:#fff;font-size:14px;outline:none;transition:.2s}
-.input:focus{border-color:#7c3aed;background:rgba(124,58,237,0.1)}
-.btn{background:linear-gradient(90deg,#7c3aed,#a855f7);border:none;border-radius:10px;color:#fff;font-size:14px;font-weight:700;padding:13px;cursor:pointer;width:100%;transition:.2s;letter-spacing:.5px}
-.btn:hover{opacity:.9;transform:translateY(-1px)}
-.btn-outline{background:transparent;border:1px solid rgba(255,255,255,0.1);color:#9ca3af}
-.btn-outline:hover{border-color:#7c3aed;color:#fff}
-.btn-sm{padding:7px 14px;font-size:12px;width:auto;border-radius:8px}
-.btn-red{background:#ef4444}
-.btn-green{background:#22c55e}
-.error{color:#ef4444;font-size:12px;margin-top:6px}
-.success{color:#22c55e;font-size:12px;margin-top:6px}
-.table{width:100%;border-collapse:collapse}
-.table th,.table td{padding:12px;text-align:left;border-bottom:1px solid rgba(255,255,255,0.04);font-size:13px}
-.table th{color:#6b7280;font-weight:600;font-size:12px;text-transform:uppercase}
-.table tr:hover td{background:rgba(255,255,255,0.02)}
-.badge{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:20px;font-size:12px;font-weight:600}
-.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
-.stat{background:#1a1a24;border-radius:12px;padding:20px;text-align:center}
-.stat-val{font-size:32px;font-weight:700;background:linear-gradient(90deg,#7c3aed,#a855f7);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.stat-lbl{color:#6b7280;font-size:13px;margin-top:4px}
-.modal{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.7);display:flex;align-items:center;justify-content:center;z-index:1000;backdrop-filter:blur(4px)}
-.modal-box{background:#111118;border:1px solid rgba(255,255,255,0.1);border-radius:20px;padding:32px;width:440px;max-width:95vw}
-.tag{display:inline-block;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700}
-label{font-size:13px;color:#9ca3af;margin-bottom:6px;display:block}
-.flex{display:flex;align-items:center;gap:8px}
-.mt{margin-top:16px}
-.mb{margin-bottom:16px}
-h2{font-size:22px;font-weight:700;margin-bottom:4px}
-h3{font-size:16px;font-weight:700;margin-bottom:16px}
-p.sub{color:#6b7280;font-size:14px;margin-bottom:24px}
-.hero{text-align:center;padding:80px 16px}
-.hero h1{font-size:56px;font-weight:800;line-height:1.1;margin-bottom:16px}
-.hero h1 span{background:linear-gradient(90deg,#7c3aed,#a855f7,#ec4899);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.hero p{color:#9ca3af;font-size:18px;margin-bottom:40px}
-.hero-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
-.features{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:20px;margin:60px 0}
-.feature{background:#111118;border:1px solid rgba(255,255,255,0.06);border-radius:16px;padding:24px}
-.feature-icon{font-size:32px;margin-bottom:12px}
-.feature h3{font-size:16px;margin-bottom:8px}
-.feature p{color:#6b7280;font-size:14px}
-.tabs{display:flex;gap:4px;background:#0a0a0f;border-radius:10px;padding:4px;margin-bottom:24px}
-.tab{flex:1;padding:10px;text-align:center;border-radius:8px;cursor:pointer;font-size:14px;color:#6b7280;transition:.2s}
-.tab.active{background:#111118;color:#fff;font-weight:600}
-.copy-btn{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#9ca3af;padding:4px 10px;border-radius:6px;cursor:pointer;font-size:11px}
-.copy-btn:hover{color:#fff}
-</style>`;
+const CSS = ""; // styles in style.css
 
-function render(html) { document.getElementById('app').innerHTML = CSS + html; }
+
+function render(html) { document.getElementById('app').innerHTML = html; }
 
 // ── NAVBAR ────────────────────────────────────────────────
 function navbar(page) {
@@ -422,6 +366,7 @@ async function showCabinet() {
     </div>
   </div>`);
   connectIRC();
+}
 
 async function downloadClient() {
   const res = await api('GET', '/api/download');
@@ -590,7 +535,6 @@ function showEditUser(id) {
   ).join('');
 
   document.getElementById('app').insertAdjacentHTML('beforeend', `
-  ${CSS}
   <div class="modal" id="edit-modal">
     <div class="modal-box">
       <h3>✏ Изменить: ${u.username}</h3>
@@ -671,7 +615,6 @@ async function deleteUser(id) {
 function showGenKeys(defaultDays, defaultType) {
   const isHwid = defaultType === 'hwid';
   document.getElementById('app').insertAdjacentHTML('beforeend', `
-  ${CSS}
   <div class="modal" id="gen-modal">
     <div class="modal-box">
       <h3>${isHwid ? '🔄 HWID ключ сброса' : '🔑 Создать ключи подписки'}</h3>
