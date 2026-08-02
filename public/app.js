@@ -42,7 +42,10 @@ function render(html) { document.getElementById('app').innerHTML = html; }
 function navbar(page) {
   const isAdmin = me && ['owner','admin','valodya'].includes(me.role);
   return `<nav class="nav">
-    <div class="nav-logo">🍎 AppleClient</div>
+    <div class="nav-logo">
+      <img src="/logo.png" style="height:36px;width:36px;object-fit:contain;border-radius:8px;margin-right:8px;vertical-align:middle">
+      <span>AppleClient</span>
+    </div>
     <div class="nav-links">
       <button class="nav-btn ${page==='home'?'active':''}" onclick="showHome()">Главная</button>
       <button class="nav-btn ${page==='plans'?'active':''}" onclick="showPlans()">Тарифы</button>
@@ -65,6 +68,9 @@ function showHome() {
   <div class="page">
     <div class="hero">
       <div class="hero-badge">🍎 AppleClient · 2026</div>
+      <div style="margin-bottom:24px">
+        <img src="/logo.png" style="width:100px;height:100px;object-fit:contain;filter:drop-shadow(0 0 30px rgba(168,85,247,0.6))">
+      </div>
       <h1>Играй<br><span class="grad">на максимум</span></h1>
       <p>Платный Minecraft клиент с мощным функционалом. Контроль, скорость и точность — всё внутри.</p>
       <div class="hero-btns">
