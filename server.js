@@ -10,10 +10,22 @@ import { fileURLToPath } from "url";
 import { createServer } from "http";
 import { WebSocketServer } from "ws";
 import nodemailer from "nodemailer";
+import multer from "multer";
+import { existsSync, mkdirSync } from "fs";
 
 const MAIL_USER = process.env.MAIL_USER || "Algolgreta@gmail.com";
 const MAIL_PASS = process.env.MAIL_PASS || "";
 const SITE_URL  = process.env.SITE_URL  || "http://localhost:3001";
+
+// Папка для аватаров
+const AVATARS_DIR = path.join(__dirname, "public", "avatars");
+if (!existsSync(AVATARS_DIR)) mkdirSync(AVATARS_DIR, { recursive: true });
+
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => cb(null, AVATARS_DIR),
+  filename: (req, file, cb) => cb(null, `${req.user.id}.png`)
+});
+const upload = multer({ storage, limits: { fileSize: 2 * 1024 * 1024 } });
 
 const mailer = nodemailer.createTransport({
   service: "gmail",
@@ -154,6 +166,15 @@ app.get("/api/me", auth, (req, res) => {
   const user = db.data.users.find(u => u.id === req.user.id);
   if (!user) return res.status(404).json({ message: "Не найден" });
   res.json(publicUser(user));
+});
+
+// ── ЗАГРУЗКА АВАТАРА ─────────────────────────────────────
+app.post("/api/avatar", auth, upload.single("avatar"), async (req, res) => {
+  if (!req.file) return res.status(400).json({ message: "Файл не загружен" });
+  const user = db.data.users.find(u => u.id === req.user.id);
+  user.avatar = `/avatars/${req.user.id}.png`;
+  await db.write();
+  res.json({ success: true, avatar: user.avatar });
 });
 
 // ── АКТИВАЦИЯ КЛЮЧА ───────────────────────────────────────
@@ -370,7 +391,7 @@ app.delete("/api/admin/keys/:key", auth, async (req, res) => {
 app.get("/api/roles", (req, res) => res.json({ roles: ROLES }));
 
 function publicUser(u) {
-  return { id: u.id, uid: u.uid, username: u.username, email: u.email, role: u.role, subscription: u.subscription, subExpiry: u.subExpiry, hwid: u.hwid ? "***" : null, hwidBanned: u.hwidBanned, banned: u.banned || false, createdAt: u.createdAt };
+  return { id: u.id, uid: u.uid, username: u.username, email: u.email, role: u.role, subscription: u.subscription, subExpiry: u.subExpiry, hwid: u.hwid ? "***" : null, hwidBanned: u.hwidBanned, banned: u.banned || false, avatar: u.avatar || null, createdAt: u.createdAt };
 }
 
 app.get("*", (req, res) => res.sendFile(path.join(__dirname, "public", "index.html")));

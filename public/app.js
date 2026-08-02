@@ -67,7 +67,7 @@ function showHome() {
   render(`${navbar('home')}
   <div class="page">
     <div class="hero">
-      <div class="hero-badge">🍎 AppleClient · 2026</div>
+      <div class="hero-badge">🍎 AppleClient · 2026 · <a href="https://t.me/britvamyst" target="_blank" style="color:#c084fc;text-decoration:none">@britvamyst</a></div>
       <div style="margin-bottom:24px">
         <img src="/logo.png" style="width:100px;height:100px;object-fit:contain;filter:drop-shadow(0 0 30px rgba(168,85,247,0.6))">
       </div>
@@ -94,7 +94,7 @@ function showHome() {
       <div class="feature"><span class="feature-icon">🎨</span><h3>Кастомизация</h3><p>Гибкие настройки под любой стиль игры и предпочтения</p></div>
       <div class="feature"><span class="feature-icon">🛡</span><h3>Безопасность</h3><p>Регулярные обновления и защита аккаунта от взлома</p></div>
       <div class="feature"><span class="feature-icon">💬</span><h3>Поддержка</h3><p>Быстрая помощь через Telegram в любое время</p></div>
-      <div class="feature"><span class="feature-icon">🔑</span><h3>Ключи активации</h3><p>Простая и безопасная система активации подписки</p></div>
+      <div class="feature"><span class="feature-icon">🗡️</span><h3>Лучший PvE мод</h3><p>Мощный PvE модуль от <a href="https://t.me/britvamyst" target="_blank" style="color:#a855f7">@britvamyst</a> — топовые механики для боя с мобами</p></div>
     </div>
     <div style="text-align:center;padding:60px 0 40px">
       <button class="btn" style="width:auto;padding:16px 40px;font-size:15px" onclick="window.open('https://t.me/Burmalda_jmv')">
@@ -213,6 +213,7 @@ function showPlans() {
       <button class="btn" style="width:auto;padding:12px 28px" onclick="window.open('https://t.me/Burmalda_jmv')">
         Написать @Burmalda_jmv
       </button>
+      <p style="color:#6b7280;font-size:12px;margin-top:12px">Лучший PvE мод включён в подписку · <a href="https://t.me/britvamyst" target="_blank" style="color:#a855f7">@britvamyst</a></p>
     </div>
   </div>`);
 }
@@ -506,7 +507,11 @@ async function showCabinet() {
     <div style="display:grid;grid-template-columns:280px 1fr;gap:20px;margin-top:24px">
       <div>
         <div class="card" style="text-align:center">
-          <div style="width:80px;height:80px;background:linear-gradient(135deg,#7c3aed,#a855f7);border-radius:50%;margin:0 auto 16px;display:flex;align-items:center;justify-content:center;font-size:32px">${r.icon}</div>
+          <div style="position:relative;width:90px;margin:0 auto 16px">
+            <img id="user-avatar" src="${me.avatar || '/default-avatar.png'}" style="width:90px;height:90px;border-radius:50%;object-fit:cover;border:3px solid rgba(168,85,247,0.4);box-shadow:0 0 20px rgba(168,85,247,0.3)">
+            <label for="avatar-upload" style="position:absolute;bottom:0;right:0;width:28px;height:28px;background:linear-gradient(135deg,#7c3aed,#a855f7);border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:14px;box-shadow:0 2px 8px rgba(0,0,0,0.3)">📷</label>
+            <input type="file" id="avatar-upload" accept="image/*" style="display:none" onchange="uploadAvatar(this)">
+          </div>
           <div style="font-size:20px;font-weight:700">${me.username}</div>
           <div style="margin:8px 0">${roleTag(me.role)}</div>
           <div style="color:#6b7280;font-size:13px">UID: ${me.uid}</div>
@@ -559,6 +564,23 @@ async function showCabinet() {
     </div>
   </div>`);
   connectIRC();
+}
+
+async function uploadAvatar(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const form = new FormData();
+  form.append('avatar', file);
+  const res = await fetch('/api/avatar', {
+    method: 'POST',
+    headers: { 'Authorization': 'Bearer ' + token },
+    body: form
+  });
+  const data = await res.json();
+  if (res.ok) {
+    document.getElementById('user-avatar').src = data.avatar + '?t=' + Date.now();
+    me.avatar = data.avatar;
+  }
 }
 
 async function downloadClient() {
