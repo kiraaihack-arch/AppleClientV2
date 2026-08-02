@@ -27,5 +27,17 @@
       "createdAt": "2026-08-01T06:26:41.917Z"
     }
   ],
-  "keys": []
+  "keys": [],
+  "resetTokens": [],
+  "loginLogs": [
+    {
+      "id": 1785667216599,
+      "userId": 1785565601856,
+      "username": "dezzka",
+      "role": "user",
+      "ip": "::1",
+      "ua": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko)",
+      "time": "2026-08-02T10:40:16.599Z"
+    }
+  ]
 }

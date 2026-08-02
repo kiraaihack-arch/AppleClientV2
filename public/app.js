@@ -64,27 +64,36 @@ function showHome() {
   render(`${navbar('home')}
   <div class="page">
     <div class="hero">
-      <h1>Играй на<br><span>максимум</span></h1>
-      <p>Платный клиент с мощным функционалом.<br>Контроль, скорость и точность — всё уже внутри.</p>
+      <div class="hero-badge">🍎 AppleClient · 2026</div>
+      <h1>Играй<br><span class="grad">на максимум</span></h1>
+      <p>Платный Minecraft клиент с мощным функционалом. Контроль, скорость и точность — всё внутри.</p>
       <div class="hero-btns">
-        <button class="btn" style="width:auto;padding:14px 32px" onclick="${me ? 'showCabinet()' : 'showAuth()'}">
-          ${me ? '🎮 Личный кабинет' : '🚀 Начать'}
+        <button class="btn" style="width:auto;padding:16px 36px;font-size:15px" onclick="${me ? 'showCabinet()' : 'showAuth()'}">
+          ${me ? '🎮 Личный кабинет' : '🚀 Начать бесплатно'}
         </button>
-        <button class="btn btn-outline" style="width:auto;padding:14px 32px" onclick="window.open('https://t.me/Burmalda_jmv')">
-          💬 Telegram
-        </button>
-        <button class="btn btn-outline" style="width:auto;padding:14px 32px" onclick="showPlans()">
+        <button class="btn btn-outline" style="width:auto;padding:16px 36px;font-size:15px" onclick="showPlans()">
           💎 Тарифы
         </button>
       </div>
+      <div class="hero-stats">
+        <div class="hero-stat"><div class="hero-stat-val">1.21.11</div><div class="hero-stat-lbl">Версия Minecraft</div></div>
+        <div class="hero-stat"><div class="hero-stat-val">45+</div><div class="hero-stat-lbl">Модулей</div></div>
+        <div class="hero-stat"><div class="hero-stat-val">24/7</div><div class="hero-stat-lbl">Поддержка</div></div>
+        <div class="hero-stat"><div class="hero-stat-val">HWID</div><div class="hero-stat-lbl">Защита</div></div>
+      </div>
     </div>
     <div class="features">
-      <div class="feature"><div class="feature-icon">⚡</div><h3>Высокая производительность</h3><p>Оптимизирован для максимального FPS и минимальных задержек</p></div>
-      <div class="feature"><div class="feature-icon">🔒</div><h3>HWID защита</h3><p>Привязка к железу — защита от распространения</p></div>
-      <div class="feature"><div class="feature-icon">🎨</div><h3>Кастомизация</h3><p>Гибкие настройки под любой стиль игры</p></div>
-      <div class="feature"><div class="feature-icon">🛡</div><h3>Безопасность</h3><p>Регулярные обновления и защита аккаунта</p></div>
-      <div class="feature"><div class="feature-icon">💎</div><h3>Поддержка</h3><p>Быстрая помощь через Telegram</p></div>
-      <div class="feature"><div class="feature-icon">🔑</div><h3>Ключи активации</h3><p>Простая система активации подписки</p></div>
+      <div class="feature"><span class="feature-icon">⚡</span><h3>Высокая производительность</h3><p>Оптимизирован для максимального FPS и минимальных задержек в бою</p></div>
+      <div class="feature"><span class="feature-icon">🔒</span><h3>HWID защита</h3><p>Привязка к железу — надёжная защита от распространения</p></div>
+      <div class="feature"><span class="feature-icon">🎨</span><h3>Кастомизация</h3><p>Гибкие настройки под любой стиль игры и предпочтения</p></div>
+      <div class="feature"><span class="feature-icon">🛡</span><h3>Безопасность</h3><p>Регулярные обновления и защита аккаунта от взлома</p></div>
+      <div class="feature"><span class="feature-icon">💬</span><h3>Поддержка</h3><p>Быстрая помощь через Telegram в любое время</p></div>
+      <div class="feature"><span class="feature-icon">🔑</span><h3>Ключи активации</h3><p>Простая и безопасная система активации подписки</p></div>
+    </div>
+    <div style="text-align:center;padding:60px 0 40px">
+      <button class="btn" style="width:auto;padding:16px 40px;font-size:15px" onclick="window.open('https://t.me/Burmalda_jmv')">
+        💬 Купить в Telegram
+      </button>
     </div>
   </div>`);
 }
