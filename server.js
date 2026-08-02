@@ -17,16 +17,6 @@ const MAIL_USER = process.env.MAIL_USER || "Algolgreta@gmail.com";
 const MAIL_PASS = process.env.MAIL_PASS || "";
 const SITE_URL  = process.env.SITE_URL  || "http://localhost:3001";
 
-// Папка для аватаров
-const AVATARS_DIR = path.join(__dirname, "public", "avatars");
-if (!existsSync(AVATARS_DIR)) mkdirSync(AVATARS_DIR, { recursive: true });
-
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => cb(null, AVATARS_DIR),
-  filename: (req, file, cb) => cb(null, `${req.user.id}.png`)
-});
-const upload = multer({ storage, limits: { fileSize: 2 * 1024 * 1024 } });
-
 const mailer = nodemailer.createTransport({
   service: "gmail",
   auth: { user: MAIL_USER, pass: MAIL_PASS }
@@ -36,6 +26,15 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const app = express();
 const PORT = process.env.PORT || 3001;
 const JWT_SECRET = "appleclient_secret_2025";
+
+// Папка для аватаров
+const AVATARS_DIR = path.join(__dirname, "public", "avatars");
+if (!existsSync(AVATARS_DIR)) mkdirSync(AVATARS_DIR, { recursive: true });
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => cb(null, AVATARS_DIR),
+  filename: (req, file, cb) => cb(null, `${req.user.id}.png`)
+});
+const upload = multer({ storage, limits: { fileSize: 2 * 1024 * 1024 } });
 
 // Иерархия ролей
 const ROLES = {

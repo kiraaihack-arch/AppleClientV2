@@ -213,7 +213,7 @@ function showPlans() {
       <button class="btn" style="width:auto;padding:12px 28px" onclick="window.open('https://t.me/Burmalda_jmv')">
         Написать @Burmalda_jmv
       </button>
-      <p style="color:#6b7280;font-size:12px;margin-top:12px">Лучший PvE мод включён в подписку · <a href="https://t.me/britvamyst" target="_blank" style="color:#a855f7">@britvamyst</a></p>
+      <p style="color:#6b7280;font-size:12px;margin-top:12px">Лучший PvE мод · <a href="https://t.me/britvamyst" target="_blank" style="color:#a855f7">@britvamyst</a></p>
     </div>
   </div>`);
 }
